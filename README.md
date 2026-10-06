@@ -14,6 +14,7 @@ the patient leaves. Later releases add safety alerts with sources, 100% note aud
 | [02 · Uzbekistan context](docs/02-uzbekistan-context.md) | Market, language reality, speech tech, regulation, unit economics |
 | [03 · Roadmap](docs/03-roadmap.md) | Phases, a weekly sprint plan, time estimates, KPIs, risks |
 | [04 · Architecture](docs/04-architecture.md) | Stack, data flow, note schema, privacy checklist |
+| [05 · LLM comparison](docs/05-llm-comparison.md) | GPT-6 Luna vs MiMo-V2.6-Pro vs Kimi: prices, cost per note, data-transfer rules, test method |
 | [Sprint 1](docs/sprints/sprint-01.md) | This week's backlog |
 
 ## Releases (nominal)

@@ -51,10 +51,10 @@ because of external dependencies (DMED access, legal opinions, licensed drug dat
 
 | Sprint | Goal | Key stories | Friday demo |
 |---|---|---|---|
-| **S1** | **Walking skeleton: record a consultation and get a note** | Repo, CI and staging deploy · in-browser recorder · ASR adapter plus a 1-day **STT bake-off** (5 UZ/RU/mixed recordings) · Claude note generator with structured output (CIS outpatient schema) · note view and copy · eval harness v0 (10 role-plays, WER) · cost and latency logging. Details in [sprint-01.md](sprints/sprint-01.md) | Live role-played consultation in Uzbek with Russian terms produces a structured note |
+| **S1** | **Walking skeleton: record a consultation and get a note** | Repo, CI and staging deploy · in-browser recorder · ASR adapter plus a 1-day **STT bake-off** (5 UZ/RU/mixed recordings) · note generator behind an OpenAI-compatible **LLM adapter** (GPT-6 Luna, MiMo-V2.6-Pro, Kimi K2.6/K3) with structured output (CIS outpatient schema) · note view and copy · eval harness v0 (10 role-plays, WER) · **quick LLM comparison on 10 cases → default model for the pilot** · cost and latency logging. Details in [sprint-01.md](sprints/sprint-01.md) | Live role-played consultation in Uzbek with Russian terms produces a structured note |
 | **S2** | **A doctor can actually use it** | Phone OTP login (local SMS gateway) · encounter list · section-by-section note editor with "regenerate section" · output language switch `uz-Latn` / `uz-Cyrl` / `ru` with deterministic transliteration · UI in UZ and RU · PDF/print export · consent checkbox | The clinical lead runs 3 role-plays end to end on their own phone |
 | **S3** | **Real-time and robust** | Streaming transcription over WebSocket with live transcript · chunked upload with local buffering (IndexedDB) that survives network drops · speaker diarization (doctor/patient) · pause/resume, consultations up to 60 min · Opus-codec audio at low bitrate | A 20-min consultation with Wi-Fi switched off mid-way loses nothing, and the note arrives in under 45 s |
-| **S4** | **Specialties and medical vocabulary** | Templates for 6 specialties (GP/therapist, pediatrics, cardiology, OB/GYN, neurology, dentistry), validated by the clinical lead · custom templates · **ICD-10 suggestions** (RU and UZ names) · drug dictionary from the Uzbek state register, used for STT boosting and LLM correction · eval set grows to 30 recordings with per-language WER and term recall | Cardiology and pediatrics consultations produce specialty-shaped notes with ICD-10 codes |
+| **S4** | **Specialties and medical vocabulary** | Templates for 6 specialties (GP/therapist, pediatrics, cardiology, OB/GYN, neurology, dentistry), validated by the clinical lead · custom templates · **ICD-10 suggestions** (RU and UZ names) · drug dictionary from the Uzbek state register, used for STT boosting and LLM correction · eval set grows to 30 recordings with per-language WER and term recall · **full LLM comparison on 30 cases with blind doctor review → confirm the model** ([05](05-llm-comparison.md)) | Cardiology and pediatrics consultations produce specialty-shaped notes with ICD-10 codes |
 | **S5** | **Telegram and patient-facing outputs** | **Telegram bot**: send a voice note or audio file and get the note back with an edit link · Telegram login · **patient summary** in the patient's language, sent by Telegram or SMS or printed · referral letter and recommendations sheet · dictation mode (post-visit monologue) | A doctor forwards a voice note in Telegram and gets the note in about a minute; the patient gets a plain-Uzbek summary |
 | **S6** | **Pilot readiness → v1.0** | Encryption at rest, audit log of every access, RBAC basics · **de-identification layer before the LLM** · audio retention policy (auto-delete) and deletion on request · audio hosted in UZ · observability (errors, latency, cost per note) · in-app feedback (1–5 rating, edit-distance tracking) · onboarding in UZ and RU, landing page | **v1.0 Pilot launch with 5–10 doctors** |
 
@@ -71,7 +71,7 @@ because of external dependencies (DMED access, legal opinions, licensed drug dat
 
 | Sprint | Goal | Key stories |
 |---|---|---|
-| **S7** | **Measure what doctors change** | Analytics on edits (which sections, which error types) · weekly quality review with the clinical lead · note-quality rubric (completeness, hallucination, correctness, style) graded by an LLM judge and spot-checked by doctors · eval regression gate in CI · **model decision**: compare Opus 5.5, Sonnet 5.5 and Haiku 4.5 on our eval for quality vs. cost |
+| **S7** | **Measure what doctors change** | Analytics on edits (which sections, which error types) · weekly quality review with the clinical lead · note-quality rubric (completeness, hallucination, correctness, style) graded by an LLM judge and spot-checked by doctors · eval regression gate in CI · **re-run the LLM comparison on de-identified pilot data**, and test two-model cross-checking (one drafts, the other checks drugs and doses) |
 | **S8** | **Self-hosted ASR v1 in Uzbekistan** | Deploy GigaAM-Multilingual (or the bake-off winner) on a GPU in UZ · ASR router choosing a provider by language, quality and cost · A/B test against hosted STT |
 | **S9** | **Medical domain adaptation** | Fine-tune on consented, de-identified pilot audio plus role-play recordings for UZ↔RU medical code-switching · hotword boosting for drugs and dosages · post-ASR LLM correction of drug names and units |
 | **S10** | **Personalization and speed → v1.5** | Per-doctor style learned from their edits · snippets and macros (e.g. a "normal exam" block) · installable PWA with an offline queue · **expand the pilot to 20–30 doctors** |
@@ -123,7 +123,7 @@ because of external dependencies (DMED access, legal opinions, licensed drug dat
 
 | Sprint | Goal | Key stories |
 |---|---|---|
-| **S22** | **Audit engine** | Check **100% of notes**: completeness against MoH form requirements, ICD-10 ↔ diagnosis ↔ treatment consistency, follow-up plan present. Runs on the Batch API at 50% cost |
+| **S22** | **Audit engine** | Check **100% of notes**: completeness against MoH form requirements, ICD-10 ↔ diagnosis ↔ treatment consistency, follow-up plan present. Runs as a nightly batch job (batch pricing where the provider offers it, e.g. MiMo at 50%) |
 | **S23** | **Quality dashboards** | Completeness and adherence trends by doctor and department · alerts accepted vs. dismissed · time-saved ROI for management |
 | **S24** | **Auditor workspace** | Review queues, sampling rules, comments back to doctors, corrective-action tracking, exportable reports |
 | **S25** | **Hardening → v4.0 Audit** | Load test (1,000 doctors) · penetration test · backup and disaster-recovery drill · performance work |
@@ -149,7 +149,7 @@ because of external dependencies (DMED access, legal opinions, licensed drug dat
 | 1 | Recruit the clinical lead · engage legal counsel · write consent forms (UZ and RU) |
 | 1–2 | **Record 30+ consented role-play consultations** (several specialties; UZ, RU and mixed) as the eval set |
 | 2–4 | Sign 1–2 design-partner clinics, with a data-processing agreement |
-| 4–6 | Legal opinion on data residency and whether voice counts as biometric data · privacy policy and terms of service in UZ and RU · personal-data database registration if required |
+| 4–6 | Legal opinion on data residency, whether voice counts as biometric data, and **which LLM providers and hosts we may send de-identified text to** · privacy policy and terms of service in UZ and RU · personal-data database registration if required |
 | 6 | **Pilot launch** |
 | 8 | Apply for DMED developer access |
 | 10–15 | First paying clinic · pricing validation |
@@ -163,7 +163,9 @@ because of external dependencies (DMED access, legal opinions, licensed drug dat
 | Hallucinated content in notes | Every statement links to its transcript evidence span · the model writes "not mentioned" instead of inventing · schema and rule validation · eval gate · the doctor signs |
 | Regulation (residency, voice-as-biometric, SaMD) | Counsel engaged early · conservative architecture (audio and PII stay in UZ) · CDSS gated on the opinion |
 | State DMED pilot competes with us | Private sector first · stay DMED/DHP-compatible · position as a partner or vendor |
-| LLM cost vs. local price | Cost per note logged from Sprint 1 · caching · batch · self-hosted STT · an eval-backed model choice |
+| LLM quality on Uzbek | Bake-off of 4 models on our own test set · re-run monthly · switching models is a config change |
+| LLM provider jurisdiction (China is not on the approved list; the US counts only with DPF) | Real patient data goes only to a provider or host in an approved jurisdiction (e.g. OpenAI EU residency, or Kimi/MiMo open weights hosted in an approved country) · de-identify first · get counsel's sign-off before the pilot |
+| Cost vs. local price | Cost per note logged from Sprint 1 · LLM cost is small with Luna/MiMo · **STT is the main cost**, so self-host it in Phase 2 |
 | Adoption and trust | Free tier · Telegram · clinic champions · visible sources · the doctor stays in control |
 | Poor connectivity in the regions | Offline buffering · low-bitrate audio · resumable uploads |
 | Dependency on DMED access | Browser-extension integration as a fallback |

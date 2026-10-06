@@ -47,14 +47,15 @@
 | Local speech companies | Aisha AI, UzbekVoice.ai, Lynx AI | Possible STT vendors, partners or benchmarks |
 | Datasets | Uzbek Speech Corpus (USC, 105 h, 958 speakers), Common Voice, FLEURS | **There is no public UZ↔RU medical code-switching dataset.** Our consented clinical data becomes a moat |
 | Russian-language medical voice | Voice2Med and Sber's voice-filled records (Russia) | These are **dictation** tools for Russian, not ambient Uzbek conversation. That is the gap we fill |
-| LLM | Claude via the Anthropic API: structured outputs (JSON schema), prompt caching, `inference_geo` | Measure Uzbek quality with our own eval set |
+| LLM | Candidates: **GPT-6 Luna, MiMo-V2.6-Pro, Kimi K2.6 / K3**, all behind one OpenAI-compatible adapter | We choose by Uzbek quality, cost and data-transfer legality in a bake-off. See [05 · LLM comparison](05-llm-comparison.md) |
 | Compute in UZ | **UzCloud** (Uztelecom national cloud: IaaS, S3, backup); new Tier III data centers with **GPU servers** (Bukhara and Kokand, Sep 2026); DataVolt TAS-1 AI data center in Tashkent IT Park (first capacity Nov 2026); local GPU rental, e.g. an A40 48GB listed at ≈23.4M UZS/month | Host audio, PII and self-hosted ASR inside Uzbekistan |
 
 ## 4. Regulation (engineering summary, not legal advice)
 
 ### 4.1 Personal data: Law No. 1125, amending the Law "On Personal Data", in force 2026-03-27
 - **Mandatory in-country storage** now applies only to **biometric data, genetic data and telecom users' data**.
-- Other personal data may be stored or processed abroad if (a) the country is recognized as **adequate** (49 countries approved in 2026, including the US, Germany, the UK and others), (b) standard contractual clauses or binding corporate rules approved by the authority are used, or (c) approved international standards are followed.
+- Other personal data may be stored or processed abroad if (a) the country is recognized as **adequate** (49 countries and territories approved on 2026-07-29, including the EU, the UK, Switzerland, Japan, Korea, Singapore and Russia), (b) standard contractual clauses or binding corporate rules approved by the authority are used, or (c) approved international standards are followed.
+- **The US counts only for companies in the EU–US Data Privacy Framework. China does not appear on the published list.** This decides how we may call the LLM providers we are considering; see [05 · LLM comparison](05-llm-comparison.md) §3.
 - Health data is a **special category**, so the highest-care handling applies.
 - **Open question for counsel:** is a consultation *voice recording* "biometric data"? It is usually treated as biometric only when processed to identify a person, which we don't do. We still design conservatively:
   - **Audio and identifiable PII are stored and processed in Uzbekistan**, or audio isn't stored at all once transcription is done.
@@ -80,26 +81,26 @@
 Local willingness to pay is roughly **USD 10–20 per doctor per month** (a hypothesis we validate in the pilot). An
 active private-clinic doctor sees about **15 patients/day, ≈300 consultations/month**.
 
-**LLM cost per 15-minute consultation.** Assumptions: the transcript is about 6–10k input tokens (Uzbek tokenizes less
-efficiently than English), the system prompt, template and glossary add about 4k tokens and are cached, and the
-note plus reasoning is about 3–4k output tokens. Prices are list prices as of 2026-09.
+**LLM cost per 15-minute consultation** for our candidates (details and assumptions in
+[05 · LLM comparison](05-llm-comparison.md)):
 
 | Model | $/MTok in / out | ≈ $ per consult | ≈ $ per doctor-month (300 consults) |
 |---|---|---|---|
-| Claude Opus 5.5 (`claude-opus-5-5`, default) | 4 / 20 | 0.10–0.15 | 30–45 |
-| Claude Sonnet 5.5 (`claude-sonnet-5-5`) | 2 / 10 | 0.05–0.07 | 15–21 |
-| Claude Haiku 4.5 (`claude-haiku-4-5`) | 1 / 5 | 0.02–0.03 | 6–9 |
+| GPT-6 Luna | 0.10 / 0.50 | 0.002–0.004 | 0.6–1.1 |
+| MiMo-V2.6-Pro | 0.43 / 0.87 | 0.005–0.009 | 1.4–2.6 |
+| Kimi K2.6 | 0.95 / 4.00 | 0.016–0.030 | 4.9–9.0 |
+| Kimi K3 | 3.00 / 15.00 | 0.057–0.106 | 17–32 |
 
 STT cost comes on top. Hosted APIs charge per audio-minute, so we verify current prices in Sprint 1. A self-hosted
 GPU is a fixed ≈USD 1.8–1.9k/month, so it pays off once there are enough active doctors.
 
 **Conclusions:**
-1. **We log cost per note from Sprint 1**, alongside latency and quality.
-2. We start on Opus 5.5, the highest quality, which matters most while we learn. **Moving note drafting to a cheaper
-   model is a business decision** that we make only after our eval shows quality is equal (Sprint 7).
-3. Levers that don't cost quality: prompt caching; the **Batch API (50% off)** for non-real-time jobs such as 100% note
-   auditing; self-hosted STT; trimming silence and small talk before the LLM.
-4. Pricing: limit the free tier by notes per month, and give clinic plans per-seat pricing with fair use.
+1. **We log cost per note from Sprint 1**, alongside latency and quality. Real token counts for Uzbek differ by tokenizer.
+2. With GPT-6 Luna or MiMo, **LLM cost is under 10% of the price**, so the model choice is about **quality on Uzbek
+   and legality of the data transfer**, not cost. Kimi K3 is only worth it if it is clearly better.
+3. **Speech recognition becomes the main variable cost.** Self-hosted STT in Phase 2 matters more than LLM tuning.
+4. Pricing: limit the free tier by notes per month, and give clinic plans per-seat pricing with fair use. Cheap LLMs
+   leave room for a more generous free tier than Telepatía's.
 
 ## Sources
 - [DMED: Uzbekistan's unified digital healthcare operator](https://dmed.uz/en)

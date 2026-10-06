@@ -17,7 +17,7 @@
 | Worker | arq or Celery on Redis | STT and LLM jobs, retries |
 | Database | **PostgreSQL 16** (pgvector later for the CDSS knowledge base) | One reliable store |
 | Object storage | S3-compatible: MinIO in dev, UzCloud S3 in prod | Audio stays in UZ |
-| LLM | **Anthropic API, `claude-opus-5-5`**, using structured outputs (`output_config.format`) and prompt caching | Best quality while we learn. Cheaper models only after an eval-backed decision |
+| LLM | **One OpenAI-compatible adapter** (`openai` Python SDK with a per-provider base URL, model ID and key). Candidates: **GPT-6 Luna, MiMo-V2.6-Pro, Kimi K2.6 / K3**. JSON-schema output where supported, JSON mode plus our own validation and retry elsewhere (MiMo). Prompt caching via a stable prompt prefix | The winner comes from the bake-off ([05](05-llm-comparison.md)). The runner-up is the automatic fallback. Switching is a config change |
 | STT | Adapter, hosted at first (Sprint 1 bake-off, e.g. ElevenLabs Scribe), then **self-hosted GigaAM-Multilingual** on a GPU in UZ (Phase 2) | Quality, residency, cost |
 | Telegram | aiogram bot | Uzbekistan's main messenger |
 | Infra | Docker Compose for dev; VMs in a UZ data center for prod; GitHub Actions CI; Sentry | Simple to start |
@@ -32,7 +32,7 @@ flowchart LR
   Q --> D[STT worker<br/>hosted → self-hosted in UZ]
   D --> E[Transcript<br/>segments · speaker · lang · timestamps]
   E --> F[De-identification<br/>names, PINFL, phones → tokens]
-  F --> G[LLM note builder<br/>Claude · structured output]
+  F --> G[LLM note builder<br/>adapter: Luna · MiMo · Kimi<br/>primary + fallback]
   G --> H[Validation<br/>schema · ICD-10 · units · evidence spans]
   H --> I[(PostgreSQL · UZ<br/>versioned notes)]
   I --> J[Doctor review & sign]
@@ -78,7 +78,8 @@ sentence. If something wasn't said, it goes in `not_mentioned` and is never inve
 - [ ] Configurable audio retention (default: delete after transcript verification + N days)
 - [ ] A consent record exists before recording starts
 - [ ] Notes labeled as AI drafts until signed
-- [ ] With the LLM vendor: request zero data retention, set `inference_geo`, no training on our data
+- [ ] Real patient data goes only to an LLM provider or host in an approved jurisdiction (see [05](05-llm-comparison.md) §3), with zero data retention requested and no training on our data
+- [ ] The bake-off and development use only role-play or synthetic data
 
 ## Proposed repo layout
 ```
