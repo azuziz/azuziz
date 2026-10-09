@@ -1,0 +1,132 @@
+# STT and LLM providers. Keys are read from the environment variable named in `api_key_env`; never put keys here.
+#
+# Prices are USD per million tokens, from public listings checked 2026-10-06. Verify them on each provider's console
+# before quoting. Base URLs and model IDs for brand-new models also need a check: list models with GET {base_url}/models.
+#
+# structured_output:
+#   "json_schema"  strict JSON schema (falls back to json_object automatically if the provider rejects it)
+#   "json_object"  JSON mode; we validate against our schema and retry once with the error
+#
+# params: extra keyword arguments passed to chat.completions.create (e.g. reasoning_effort, max_completion_tokens).
+
+# ---------------------------------------------------------------- LLMs: direct provider APIs
+
+[llm."gpt-6-luna"]
+label = "GPT-6 Luna (OpenAI)"
+base_url = "https://api.openai.com/v1"
+api_key_env = "OPENAI_API_KEY"
+model = "gpt-6-luna"
+structured_output = "json_schema"
+price_input = 0.10
+price_cached_input = 0.01
+price_output = 0.50
+
+[llm."mimo-v2.6-pro"]
+label = "MiMo-V2.6-Pro (Xiaomi)"
+base_url = "https://api.xiaomimimo.com/v1"
+api_key_env = "MIMO_API_KEY"
+model = "mimo-v2.6-pro"
+structured_output = "json_object"  # MiMo has JSON mode but no json_schema
+price_input = 0.43
+price_cached_input = 0.0036
+price_output = 0.87
+
+[llm."kimi-k2.6"]
+label = "Kimi K2.6 (Moonshot)"
+base_url = "https://api.moonshot.ai/v1"  # China-mainland keys use https://api.moonshot.cn/v1
+api_key_env = "MOONSHOT_API_KEY"
+model = "kimi-k2.6"
+structured_output = "json_schema"
+price_input = 0.95
+price_cached_input = 0.16
+price_output = 4.00
+
+[llm."kimi-k3"]
+label = "Kimi K3 (Moonshot)"
+base_url = "https://api.moonshot.ai/v1"
+api_key_env = "MOONSHOT_API_KEY"
+model = "kimi-k3"
+structured_output = "json_schema"
+price_input = 3.00
+price_cached_input = 0.30
+price_output = 15.00
+
+# ---------------------------------------------------------------- LLMs: the same models through OpenRouter (one key)
+
+[llm."or/mimo-v2.6-pro"]
+label = "MiMo-V2.6-Pro (OpenRouter)"
+base_url = "https://openrouter.ai/api/v1"
+api_key_env = "OPENROUTER_API_KEY"
+model = "xiaomi/mimo-v2.6-pro"
+structured_output = "json_object"
+price_input = 0.43
+price_cached_input = 0.0036
+price_output = 0.87
+
+[llm."or/kimi-k2.6"]
+label = "Kimi K2.6 (OpenRouter)"
+base_url = "https://openrouter.ai/api/v1"
+api_key_env = "OPENROUTER_API_KEY"
+model = "moonshotai/kimi-k2.6"
+structured_output = "json_schema"
+price_input = 0.95
+price_cached_input = 0.16
+price_output = 4.00
+
+[llm."or/kimi-k3"]
+label = "Kimi K3 (OpenRouter)"
+base_url = "https://openrouter.ai/api/v1"
+api_key_env = "OPENROUTER_API_KEY"
+model = "moonshotai/kimi-k3"
+structured_output = "json_schema"
+price_input = 3.00
+price_cached_input = 0.30
+price_output = 15.00
+
+# ---------------------------------------------------------------- Judge for the LLM comparison (not a candidate)
+
+[llm."gpt-6-sol"]
+label = "GPT-6 Sol (OpenAI, judge)"
+base_url = "https://api.openai.com/v1"
+api_key_env = "OPENAI_API_KEY"
+model = "gpt-6-sol"
+structured_output = "json_schema"
+drafting = false
+# Approximate: reported as 5x GPT-6 Luna. Verify before relying on judge cost numbers.
+price_input = 0.50
+price_cached_input = 0.05
+price_output = 2.50
+
+# ---------------------------------------------------------------- Offline fake for tests and demos without keys
+
+[llm.fake]
+label = "Fake (offline demo)"
+provider = "fake"
+model = "fake"
+structured_output = "json_schema"
+price_input = 0.0
+price_cached_input = 0.0
+price_output = 0.0
+
+# ---------------------------------------------------------------- Speech-to-text
+
+[stt.elevenlabs]
+label = "ElevenLabs Scribe v2"
+provider = "elevenlabs"
+base_url = "https://api.elevenlabs.io/v1"
+api_key_env = "ELEVENLABS_API_KEY"
+model = "scribe_v2"
+# Set from your ElevenLabs plan (USD per audio minute); left empty so reports show "n/a" instead of a guess.
+# price_per_minute = 0.0
+
+[stt.openai]
+label = "OpenAI transcription"
+provider = "openai"
+base_url = "https://api.openai.com/v1"
+api_key_env = "OPENAI_API_KEY"
+model = "gpt-4o-transcribe"  # check GET /v1/models for newer transcription models
+# price_per_minute = 0.0
+
+[stt.fake]
+label = "Fake (offline demo)"
+provider = "fake"

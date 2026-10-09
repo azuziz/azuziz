@@ -1,0 +1,39 @@
+{
+  "id": "04-tonsillitis-mixed-allergy",
+  "title": "Acute tonsillitis: Russian and Uzbek switching mid-sentence, amoxicillin allergy changes the antibiotic",
+  "synthetic": true,
+  "review_status": "needs clinical review",
+  "specialty": "therapist",
+  "conversation_language": "uz+ru",
+  "output_language": "ru",
+  "expected_icd10": ["J03.0"],
+  "acceptable_icd10": ["J03", "J03.9", "J02.0"],
+  "medical_terms": ["температура", "amoksitsillin", "миндалины", "гнойные налёты", "лимфоузлы", "тонзиллит", "стрептококк", "азитромицин", "ибупрофен"],
+  "segments": [
+    {"speaker": "doctor", "text": "Здравствуйте, qani, o'tiring. Что беспокоит?"},
+    {"speaker": "patient", "text": "Tomog'im juda og'riyapti, uch kundan beri. Yutinish qiyin. Температура тридцать девять было kecha."},
+    {"speaker": "doctor", "text": "Yo'tal bormi? Burun bitganmi?"},
+    {"speaker": "patient", "text": "Yo'q, yo'tal yo'q. Burun ham bitmagan."},
+    {"speaker": "doctor", "text": "Oldin antibiotik ichganmisiz, allergiya bo'lganmi?"},
+    {"speaker": "patient", "text": "Bir marta amoksitsillin ichganimda badanimga toshma chiqqan, keyin ichmaganman."},
+    {"speaker": "doctor", "text": "Хорошо. Смотрим горло: миндалины увеличены, гиперемированы, есть гнойные налёты. Подчелюстные лимфоузлы увеличены, болезненные. Температура сейчас тридцать восемь и семь."},
+    {"speaker": "doctor", "text": "Это острый тонзиллит, похоже бактериальный. Экспресс-тест на стрептококк положительный."},
+    {"speaker": "doctor", "text": "Amoksitsillin sizga mumkin emas, allergiya bo'lgani uchun. Азитромицин пятьсот миллиграммов один раз в день, три дня."},
+    {"speaker": "doctor", "text": "Ибупрофен четыреста миллиграммов при боли или температуре, до трёх раз в день, после еды."},
+    {"speaker": "doctor", "text": "Tuzli suv bilan chayqang, issiq ichimlik iching. Ко мне через три дня, если не лучше, раньше."},
+    {"speaker": "patient", "text": "Rahmat."}
+  ],
+  "facts": [
+    {"id": "f1", "fact": "Severe sore throat for 3 days, painful swallowing", "critical": false, "keywords": ["горл"]},
+    {"id": "f2", "fact": "Fever 39 °C yesterday", "critical": false, "keywords": ["39"]},
+    {"id": "f3", "fact": "No cough, no nasal congestion", "critical": false, "keywords": ["каш"]},
+    {"id": "f4", "fact": "Allergy to amoxicillin (skin rash)", "critical": true, "keywords": ["амоксициллин|amoksitsillin"]},
+    {"id": "f5", "fact": "Exam: enlarged hyperemic tonsils with purulent exudate, enlarged tender submandibular lymph nodes, T 38.7 °C", "critical": false, "keywords": ["налёт|налет", "38,7|38.7"]},
+    {"id": "f6", "fact": "Rapid strep test positive", "critical": false, "keywords": ["стрептокок"]},
+    {"id": "f7", "fact": "Diagnosis: acute (bacterial, streptococcal) tonsillitis", "critical": false, "keywords": ["тонзиллит"]},
+    {"id": "f8", "fact": "Azithromycin 500 mg once daily for 3 days (amoxicillin avoided because of the allergy)", "critical": true, "keywords": ["азитромицин", "500"]},
+    {"id": "f9", "fact": "Ibuprofen 400 mg for pain or fever, up to 3 times a day, after meals", "critical": true, "keywords": ["ибупрофен", "400"]},
+    {"id": "f10", "fact": "Gargle with salt water, warm drinks", "critical": false, "keywords": ["полоск"]},
+    {"id": "f11", "fact": "Follow-up in 3 days, earlier if not improving", "critical": false, "keywords": ["3 дн|трёх дн|трех дн|три дня"]}
+  ]
+}

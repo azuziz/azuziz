@@ -1,0 +1,43 @@
+{
+  "id": "03-diabetes-uz-dose-correction",
+  "title": "New type 2 diabetes: Uzbek, penicillin allergy mentioned once, metformin titration corrected mid-sentence",
+  "synthetic": true,
+  "review_status": "needs clinical review",
+  "specialty": "therapist",
+  "conversation_language": "uz",
+  "output_language": "uz-Latn",
+  "expected_icd10": ["E11.9"],
+  "acceptable_icd10": ["E11"],
+  "medical_terms": ["qandli diabet", "penitsillin", "glikirlangan gemoglobin", "metformin", "okulist", "kreatinin", "glyukometr"],
+  "segments": [
+    {"speaker": "doctor", "text": "Assalomu alaykum. Qanday shikoyatlar bilan keldingiz?"},
+    {"speaker": "patient", "text": "Doktor, oxirgi bir oydan beri ko'p suv ichyapman, og'zim quriydi, kechasi ham ikki-uch marta hojatga turaman. Holsizlik bor."},
+    {"speaker": "doctor", "text": "Ozganmisiz?"},
+    {"speaker": "patient", "text": "Ha, ikki oyda to'rt kilo ozdim."},
+    {"speaker": "doctor", "text": "Oldin qandli diabet aniqlanganmi?"},
+    {"speaker": "patient", "text": "Yo'q. Lekin onamda qandli diabet bor."},
+    {"speaker": "doctor", "text": "Biror dorige allergiya bormi?"},
+    {"speaker": "patient", "text": "Penitsillinga allergiyam bor, toshma chiqqan edi. Boshqa dori ichmayman."},
+    {"speaker": "doctor", "text": "Kecha topshirgan tahlilingiz keldi: och qoringa qand 9,8 millimol, glikirlangan gemoglobin 8,1 foiz."},
+    {"speaker": "doctor", "text": "Vazningiz 92 kilogramm, bo'yingiz 170. Bosim 130 ga 80. Oyoqlarda sezuvchanlik saqlangan."},
+    {"speaker": "doctor", "text": "Tashxis: ikkinchi tip qandli diabet, birinchi marta aniqlandi."},
+    {"speaker": "doctor", "text": "Metformin buyuraman: 500 milligramm, kuniga ikki marta ovqat bilan. Yo'q, birinchi hafta kuniga bir marta kechki ovqat bilan, keyin ikki martaga o'tasiz, oshqozon yaxshi ko'tarishi uchun."},
+    {"speaker": "doctor", "text": "Shirinlik, oq non, shirin ichimliklarni cheklang. Har kuni o'ttiz daqiqa piyoda yuring."},
+    {"speaker": "doctor", "text": "Ko'z tubini ko'rsatish uchun okulistga yo'llanma beraman, yana siydik tahlili va kreatinin topshiring."},
+    {"speaker": "doctor", "text": "Bir oydan keyin qayta ko'rik, uyda glyukometr bilan qandni o'lchab boring."},
+    {"speaker": "patient", "text": "Xo'p, rahmat."}
+  ],
+  "facts": [
+    {"id": "f1", "fact": "For 1 month: excessive thirst, dry mouth, nocturia 2–3 times, weakness", "critical": false, "keywords": ["chanqo|suv"]},
+    {"id": "f2", "fact": "Lost 4 kg in 2 months", "critical": false, "keywords": ["4 kg|to'rt kilo|4 kilo"]},
+    {"id": "f3", "fact": "No previous diabetes diagnosis; mother has diabetes", "critical": false, "keywords": ["ona"]},
+    {"id": "f4", "fact": "Allergy to penicillin (rash)", "critical": true, "keywords": ["penitsillin|penisillin|penicillin"]},
+    {"id": "f5", "fact": "Labs: fasting glucose 9.8 mmol/L, HbA1c 8.1%", "critical": false, "keywords": ["9,8|9.8", "8,1|8.1"]},
+    {"id": "f6", "fact": "Exam: weight 92 kg, height 170 cm, BP 130/80, foot sensation preserved", "critical": false, "keywords": ["92", "130"]},
+    {"id": "f7", "fact": "Diagnosis: type 2 diabetes mellitus, newly diagnosed", "critical": false, "keywords": ["diabet"]},
+    {"id": "f8", "fact": "Metformin 500 mg once daily with dinner for the first week, then twice daily with meals (the initial 'twice daily from the start' was corrected)", "critical": true, "keywords": ["metformin", "500"]},
+    {"id": "f9", "fact": "Limit sweets, white bread and sugary drinks; walk 30 minutes daily", "critical": false, "keywords": ["30|o'ttiz"]},
+    {"id": "f10", "fact": "Referral to ophthalmologist for fundus exam; urinalysis and creatinine", "critical": false, "keywords": ["okulist|oftalmolog|ko'z", "kreatinin"]},
+    {"id": "f11", "fact": "Follow-up in 1 month; home glucose monitoring with a glucometer", "critical": false, "keywords": ["bir oy|1 oy"]}
+  ]
+}
